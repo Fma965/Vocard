@@ -188,6 +188,16 @@ def callback():
 
     return redirect(url_for("home"))
 
+# invite redirect page
+@app.route('/invite')
+def invite():
+    params = {
+        'client_id': CLIENT_ID,
+        'permissions': '2184260928',
+        'scope': 'bot applications.commands'
+    }
+    return redirect(f'https://discord.com/oauth2/authorize')
+
 
 @socketio.on("connect")
 @login_required
