@@ -196,7 +196,7 @@ def invite():
         'permissions': '2184260928',
         'scope': 'bot applications.commands'
     }
-    return redirect(f'https://discord.com/oauth2/authorize')
+    return redirect(f'https://discord.com/oauth2/authorize?{"&".join([f"{k}={v}" for k, v in params.items()])}')
 
 
 @socketio.on("connect")
