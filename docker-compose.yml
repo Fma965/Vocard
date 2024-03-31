@@ -73,6 +73,8 @@ services:
             - traefik.http.routers.vocard.tls=true
             - traefik.http.routers.vocard.tls.certresolver=letsencrypt
         #   - "traefik.http.routers.vocard.middlewares=authentik@docker"
+        ports:
+            - "5000:5000"
 
 networks:
     local:
