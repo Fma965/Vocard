@@ -144,8 +144,8 @@ def proxy(user: User, url):
 # home page
 @app.route('/')
 @login_required
-def home(user: User):
-    return render_template("index.html", user=user)
+def home(user: User, client_id: str):
+    return render_template("index.html", user=user, client_id=CLIENT_ID)
 
 # login page
 @app.route('/login')
