@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
     lavalink:
-        image: ghcr.io/lavalink-devs/lavalink:latest
+        image: ghcr.io/lavalink-devs/lavalink:v4-update-lp #Hotfix for Youtube 403
         container_name: lavalink
         restart: unless-stopped
         environment:
@@ -18,43 +18,61 @@ services:
         expose:
             - "2333"
 
-    # # You can selfhost MongoDB. Just uncomment lines starting with single "#" below.
-    # mongo:
-    #     image: mongo:latest
-    #     container_name: mongo
-    #     restart: unless-stopped
-    #     volumes:
-    #         # Use "./" if you want to create a mount from your current directory (where docker-compose.yml is located)
-    #         # Having access to files INSIDE the container is complicated. Mount function is used to have access to certain container files or folders.
-    #         # Read more: https://docs.docker.com/storage/bind-mounts/ 
-    #         - ./data/mongo/db:/data/db
-    #         - ./data/mongo/conf:/data/configdb
-    #     environment:
-    #         - MONGO_INITDB_ROOT_USERNAME=admin
-    #         - MONGO_INITDB_ROOT_PASSWORD=admin
-    #     expose:
-    #         - "27017"
-    #     networks:
-    #         - local
-    #     command: ["mongod", "--oplogSize=1024", "--wiredTigerCacheSizeGB=1", "--auth", "--noscripting"]
+    # You can selfhost MongoDB. Just uncomment lines starting with single "#" below.
+    mongo:
+        image: mongo:latest
+        container_name: mongo
+        restart: unless-stopped
+        volumes:
+            # Use "./" if you want to create a mount from your current directory (where docker-compose.yml is located)
+            # Having access to files INSIDE the container is complicated. Mount function is used to have access to certain container files or folders.
+            # Read more: https://docs.docker.com/storage/bind-mounts/ 
+            - ./data/mongo/db:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=admin
+            - MONGO_INITDB_ROOT_PASSWORD=admin
+            - MONGO_INITDB_DATABASE=vocard
+        expose:
+            - "27017"
+        networks:
+            - local
+        command: ["mongod", "--oplogSize=1024", "--wiredTigerCacheSizeGB=1", "--auth", "--noscripting"]
 
     vocard:
-        image: ghcr.io/chocomeow/vocard:v2.6.8
+        image: ghcr.io/fma965/vocard:beta
         container_name: vocard
         volumes:
             ## Use "./" if you want to create a mount from your current directory (where docker-compose.yml is located)
             ## Having access to files INSIDE the container is complicated. Mount function is used to have access to certain container files or folders.
             ## Read more: https://docs.docker.com/storage/bind-mounts/ 
             - ./settings.json:/app/settings.json
-        env_file:
-            - .env
+        environment: 
+            - "TOKEN==#########################""
+            - "CLIENT_ID==#########################""
+            - "CLIENT_SECRET_ID==#########################""
+            - "SERCET_KEY==#########################""
+            - "REDIRECT_URI=https://DOMAIN.TLD/callback"
+            - "BUG_REPORT_CHANNEL_ID=123456789012345678"
+            - "SPOTIFY_CLIENT_ID=#########################"
+            - "SPOTIFY_CLIENT_SECRET=#########################""
+            - "GENIUS_TOKEN=#########################"
+            - "MONGODB_URL=mongodb://admin:admin@mongo"
+            - "MONGODB_NAME=vocard"
         depends_on:
             lavalink:
                 condition: service_started
-            # mongo:
-            #     condition: service_started
+            mongo:
+                condition: service_started
         networks:
             - local
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.vocard.rule=Host(`music.DOMAIN.TLD`)
+            - traefik.http.services.vocard.loadbalancer.server.port=5000
+            - traefik.http.routers.vocard.entrypoints=websecure
+            - traefik.http.routers.vocard.tls=true
+            - traefik.http.routers.vocard.tls.certresolver=letsencrypt
+        #   - "traefik.http.routers.vocard.middlewares=authentik@docker"
 
 networks:
     local:
