@@ -47,14 +47,14 @@ services:
             ## Read more: https://docs.docker.com/storage/bind-mounts/ 
             - ./settings.json:/app/settings.json
         environment: 
-            - "TOKEN==#########################""
-            - "CLIENT_ID==#########################""
-            - "CLIENT_SECRET_ID==#########################""
-            - "SERCET_KEY==#########################""
+            - "TOKEN==#########################"
+            - "CLIENT_ID==#########################"
+            - "CLIENT_SECRET_ID==#########################"
+            - "SERCET_KEY==#########################"
             - "REDIRECT_URI=https://DOMAIN.TLD/callback"
             - "BUG_REPORT_CHANNEL_ID=123456789012345678"
             - "SPOTIFY_CLIENT_ID=#########################"
-            - "SPOTIFY_CLIENT_SECRET=#########################""
+            - "SPOTIFY_CLIENT_SECRET=#########################"
             - "GENIUS_TOKEN=#########################"
             - "MONGODB_URL=mongodb://admin:admin@mongo"
             - "MONGODB_NAME=vocard"
